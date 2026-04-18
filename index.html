@@ -6,7 +6,6 @@
     <title>Tabungan Saya - Cloud Sync</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
@@ -55,34 +54,161 @@
             100% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
-        .app {
+        .screen {
             position: relative; z-index: 1;
             max-width: 520px; margin: 0 auto;
             padding: 20px 16px 100px;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .screen.hidden {
+            opacity: 0; pointer-events: none;
+            position: absolute; top: 0; left: 0; right: 0;
+            transform: translateY(20px);
+        }
+        .screen.visible {
+            opacity: 1; pointer-events: auto;
+            transform: translateY(0);
         }
 
-        /* Header */
-        .header { text-align: center; padding: 28px 0 24px; }
-        .header .icon-wrap {
+        #loginScreen {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 20px;
+        }
+        .login-logo {
+            text-align: center; margin-bottom: 36px;
+        }
+        .login-logo .icon-wrap {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 60px; height: 60px; border-radius: 16px;
+            width: 72px; height: 72px; border-radius: 20px;
             background: var(--accent-dim); border: 1px solid rgba(0,230,138,0.2);
-            margin-bottom: 14px; font-size: 24px; color: var(--accent);
+            margin-bottom: 16px; font-size: 30px; color: var(--accent);
             animation: iconPulse 3s ease-in-out infinite;
         }
         @keyframes iconPulse {
             0%,100% { box-shadow: 0 0 0 0 rgba(0,230,138,0.15); }
-            50% { box-shadow: 0 0 0 14px rgba(0,230,138,0); }
+            50% { box-shadow: 0 0 0 16px rgba(0,230,138,0); }
         }
-        .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { color: var(--muted); font-size: 13px; margin-top: 5px; line-height: 1.5; }
+        .login-logo h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+        .login-logo p { color: var(--muted); font-size: 13px; margin-top: 6px; }
 
-        /* Status koneksi & sync */
+        .login-box {
+            width: 100%; max-width: 400px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px 22px;
+        }
+        .login-box .label-text {
+            font-size: 12px; color: var(--muted); text-transform: uppercase;
+            letter-spacing: 1.2px; font-weight: 500; margin-bottom: 10px;
+        }
+        .login-input-wrap {
+            position: relative; margin-bottom: 14px;
+        }
+        .login-input-wrap i {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 14px; pointer-events: none;
+        }
+        .login-input {
+            width: 100%; background: var(--bg2); border: 1.5px solid var(--border);
+            border-radius: 14px; padding: 14px 14px 14px 42px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 500;
+            color: var(--fg); outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .login-input::placeholder { color: rgba(122,158,140,0.4); font-weight: 400; }
+        .login-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+        .btn-register {
+            width: 100%; padding: 15px; border: none; border-radius: 14px;
+            background: var(--accent); color: #052e1a;
+            font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.25s; display: flex;
+            align-items: center; justify-content: center; gap: 9px;
+        }
+        .btn-register:hover { box-shadow: 0 4px 28px rgba(0,230,138,0.3); transform: translateY(-1px); }
+        .btn-register:active { transform: translateY(0); }
+        .btn-register:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .divider {
+            display: flex; align-items: center; gap: 14px;
+            margin: 24px 0 18px; color: var(--muted); font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        .users-grid { display: flex; flex-direction: column; gap: 8px; }
+        .user-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; background: var(--bg2);
+            border: 1.5px solid var(--border); border-radius: 14px;
+            cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+        }
+        .user-card:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
+        .user-card:active { transform: translateY(0); }
+        .user-avatar {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; flex-shrink: 0;
+            color: #fff; letter-spacing: -0.5px;
+        }
+        .user-info { flex: 1; min-width: 0; }
+        .user-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-meta { font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; gap: 12px; }
+        .user-meta span { display: flex; align-items: center; gap: 4px; }
+        .user-arrow { color: var(--muted); font-size: 13px; flex-shrink: 0; transition: transform 0.2s; }
+        .user-card:hover .user-arrow { transform: translateX(3px); color: var(--fg); }
+        .user-del-btn {
+            position: absolute; top: 8px; right: 8px;
+            width: 26px; height: 26px; border-radius: 7px;
+            background: var(--red-dim); border: none;
+            color: var(--red); cursor: pointer; font-size: 10px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .user-card:hover .user-del-btn { opacity: 1; }
+        .user-del-btn:hover { background: rgba(255,92,106,0.25); }
+
+        .no-users { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+        .no-users i { font-size: 28px; margin-bottom: 8px; display: block; opacity: 0.3; }
+
+        .login-sync {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            margin-top: 24px; font-size: 11px; color: var(--muted);
+        }
+        .login-sync i { font-size: 10px; }
+        .login-sync .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .login-sync .dot.on { background: var(--accent); }
+        .login-sync .dot.off { background: var(--red); }
+
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 0 20px; text-align: left;
+        }
+        .header-left { display: flex; align-items: center; gap: 14px; }
+        .header-avatar {
+            width: 46px; height: 46px; border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+        }
+        .header-avatar:hover { transform: scale(1.06); box-shadow: 0 0 0 3px rgba(255,255,255,0.1); }
+        .header-info h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+        .header-info p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+        .btn-logout {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s;
+        }
+        .btn-logout:hover { background: var(--red-dim); color: var(--red); border-color: rgba(255,92,106,0.3); }
+
         .sync-status {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 8px 14px; margin-bottom: 18px;
-            font-size: 11px;
+            border-radius: 12px; padding: 8px 14px; margin-bottom: 16px; font-size: 11px;
         }
         .sync-left { display: flex; align-items: center; gap: 8px; }
         .sync-left i { font-size: 12px; }
@@ -92,17 +218,6 @@
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .sync-right { color: var(--muted); font-family: monospace; }
 
-        /* Peringatan storage */
-        .storage-warn {
-            display: flex; align-items: flex-start; gap: 10px;
-            background: var(--gold-dim); border: 1px solid rgba(255,209,102,0.2);
-            border-radius: 12px; padding: 12px 14px; margin-bottom: 18px;
-            font-size: 12px; color: var(--gold); line-height: 1.5;
-        }
-        .storage-warn i { margin-top: 2px; flex-shrink: 0; }
-        .storage-warn strong { color: #ffe5a0; }
-
-        /* Balance card */
         .balance-card {
             background: linear-gradient(135deg, #0d3326 0%, #153a2c 50%, #1a3028 100%);
             border: 1px solid var(--border); border-radius: 20px;
@@ -136,7 +251,6 @@
         .sub-info .item span { color: var(--muted); }
         .sub-info .item strong { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12px; }
 
-        /* Input section */
         .input-section { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
         .input-group { position: relative; }
         .input-group .prefix {
@@ -160,7 +274,6 @@
         .input-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
         .input-group textarea::placeholder { color: rgba(122,158,140,0.5); }
 
-        /* Tombol aksi */
         .btn-row { display: flex; gap: 10px; margin-bottom: 20px; }
         .btn {
             flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -176,10 +289,7 @@
         .btn-out:hover { box-shadow: 0 4px 24px rgba(255,92,106,0.3); transform: translateY(-1px); }
         .btn:active { transform: translateY(0) !important; }
 
-        /* Toolbar backup */
-        .toolbar {
-            display: flex; gap: 8px; margin-bottom: 18px;
-        }
+        .toolbar { display: flex; gap: 8px; margin-bottom: 18px; }
         .tool-btn {
             flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
             padding: 10px 10px; border: 1.5px solid var(--border); border-radius: 12px;
@@ -187,12 +297,9 @@
             font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.25s;
         }
         .tool-btn:hover { background: var(--card-hover); color: var(--fg); border-color: rgba(255,255,255,0.1); }
-        .tool-btn.export-btn:hover { border-color: rgba(0,230,138,0.3); color: var(--accent); }
-        .tool-btn.import-btn:hover { border-color: rgba(255,209,102,0.3); color: var(--gold); }
         .tool-btn.danger-btn:hover { border-color: rgba(255,92,106,0.3); color: var(--red); }
         .tool-btn.sync-btn:hover { border-color: rgba(59,130,246,0.3); color: var(--blue); }
 
-        /* Riwayat */
         .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .history-header h2 { font-size: 16px; font-weight: 600; }
         .history-header .tx-count { font-size: 12px; color: var(--muted); font-weight: 400; }
@@ -230,7 +337,6 @@
         .empty-state i { font-size: 44px; margin-bottom: 14px; opacity: 0.25; display: block; }
         .empty-state p { font-size: 13px; line-height: 1.6; }
 
-        /* Toast */
         .toast-container {
             position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
             z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
@@ -253,7 +359,6 @@
         @keyframes toastIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-14px); } }
 
-        /* Modal */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.65);
             backdrop-filter: blur(6px); z-index: 8000;
@@ -286,8 +391,7 @@
 
         @media (max-width: 400px) {
             .balance-card .amount { font-size: 28px; }
-            .header h1 { font-size: 22px; }
-            .toolbar { flex-wrap: wrap; }
+            .header-info h1 { font-size: 17px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -304,11 +408,10 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Modal hapus semua -->
 <div class="modal-overlay" id="clearModal">
     <div class="modal-box">
         <h3>Hapus Semua Riwayat</h3>
-        <p>Semua data transaksi akan dihapus permanen dari cloud dan perangkat.</p>
+        <p>Semua data transaksi <strong id="clearModalUser" style="color:var(--fg)"></strong> akan dihapus permanen dari cloud.</p>
         <div class="modal-btns">
             <button class="btn-cancel" onclick="closeClearModal()">Batal</button>
             <button class="btn-danger" onclick="confirmClearAll()">Hapus Semua</button>
@@ -316,17 +419,62 @@
     </div>
 </div>
 
-<input type="file" id="importFile" accept=".json">
+<div class="modal-overlay" id="deleteUserModal">
+    <div class="modal-box">
+        <h3>Hapus Pengguna</h3>
+        <p>Semua data tabungan <strong id="deleteModalUser" style="color:var(--fg)"></strong> akan dihapus permanen dari cloud.</p>
+        <div class="modal-btns">
+            <button class="btn-cancel" onclick="closeDeleteUserModal()">Batal</button>
+            <button class="btn-danger" onclick="confirmDeleteUser()">Hapus</button>
+        </div>
+    </div>
+</div>
 
-<div class="app">
-
-    <header class="header">
+<!-- ===== LAYAR LOGIN ===== -->
+<div class="screen visible" id="loginScreen">
+    <div class="login-logo">
         <div class="icon-wrap"><i class="fa-solid fa-cloud"></i></div>
         <h1>Tabungan Saya</h1>
-        <p>Cloud sync • Data aman di Firebase</p>
+        <p>Cloud sync &middot; Multi pengguna</p>
+    </div>
+    <div class="login-box">
+        <div class="label-text">Daftar atau masuk</div>
+        <div class="login-input-wrap">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" class="login-input" id="nameInput" placeholder="Ketik nama kamu..." maxlength="20" autocomplete="off">
+        </div>
+        <button class="btn-register" id="btnRegister" onclick="registerAndEnter()">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Daftar & Masuk
+        </button>
+        <div class="divider">atau pilih profil</div>
+        <div class="users-grid" id="usersGrid">
+            <div class="no-users" id="noUsersMsg">
+                <i class="fa-solid fa-users-slash"></i>
+                <p>Belum ada pengguna terdaftar.<br>Masukkan nama di atas untuk mulai.</p>
+            </div>
+        </div>
+    </div>
+    <div class="login-sync" id="loginSync">
+        <div class="dot off" id="loginDot"></div>
+        <span id="loginSyncText">Menyambungkan...</span>
+    </div>
+</div>
+
+<!-- ===== LAYAR APLIKASI ===== -->
+<div class="screen hidden" id="appScreen">
+    <header class="header">
+        <div class="header-left">
+            <div class="header-avatar" id="headerAvatar" onclick="logout()" title="Ganti pengguna"></div>
+            <div class="header-info">
+                <h1 id="headerName">-</h1>
+                <p>Tabungan pribadi &middot; Cloud sync</p>
+            </div>
+        </div>
+        <button class="btn-logout" onclick="logout()" aria-label="Ganti pengguna" title="Ganti pengguna">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
     </header>
 
-    <!-- Status Sinkronisasi -->
     <div class="sync-status" id="syncStatus">
         <div class="sync-left">
             <i class="fa-solid fa-circle-nodes" id="syncIcon"></i>
@@ -335,12 +483,6 @@
         <div class="sync-right" id="syncTime"></div>
     </div>
 
-    <div class="storage-warn">
-        <i class="fa-solid fa-circle-info"></i>
-        <span>Data tersimpan di <strong>cloud Firebase</strong> secara realtime. Buka di perangkat lain dengan akun yang sama, data akan sinkron otomatis.</span>
-    </div>
-
-    <!-- Saldo -->
     <section class="balance-card">
         <div class="label">Total Saldo</div>
         <div class="amount" id="balanceDisplay">Rp 0</div>
@@ -358,7 +500,6 @@
         </div>
     </section>
 
-    <!-- Input -->
     <section class="input-section">
         <div class="input-group">
             <span class="prefix">Rp</span>
@@ -378,23 +519,15 @@
         </button>
     </div>
 
-    <!-- Toolbar backup -->
     <div class="toolbar">
-        <button class="tool-btn export-btn" onclick="exportBackup()">
-            <i class="fa-solid fa-download"></i> Export Backup
-        </button>
-        <button class="tool-btn import-btn" onclick="triggerImport()">
-            <i class="fa-solid fa-upload"></i> Import Backup
-        </button>
         <button class="tool-btn sync-btn" onclick="forceSync()">
             <i class="fa-solid fa-arrows-rotate"></i> Sinkron
         </button>
         <button class="tool-btn danger-btn" id="btnClearAll" onclick="showClearModal()" style="display:none;">
-            <i class="fa-solid fa-trash-can"></i> Hapus
+            <i class="fa-solid fa-trash-can"></i> Hapus Semua
         </button>
     </div>
 
-    <!-- Riwayat -->
     <section>
         <div class="history-header">
             <h2>Riwayat Transaksi <span class="tx-count" id="txCount"></span></h2>
@@ -406,11 +539,9 @@
             </div>
         </div>
     </section>
-
 </div>
 
 <script>
-    // ==================== FIREBASE CONFIG ====================
     const firebaseConfig = {
         apiKey: "AIzaSyDUz5JUyhW5CX38mleMv__POsSD5oOLnmg",
         authDomain: "tabungan-saya.firebaseapp.com",
@@ -422,17 +553,29 @@
         measurementId: "G-BHVGMK3Z5C"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const transactionsRef = database.ref('transactions');
 
-    // ==================== GLOBAL STATE ====================
+    let currentUser = null;
     let transactions = [];
-    let isSyncing = false;
+    let userList = [];
     let syncListener = null;
+    let usersListener = null;
+    let pendingDeleteUserKey = null;
 
-    // DOM Elements
+    function userTxRef(userKey) { return database.ref('users/' + userKey + '/transactions'); }
+    const userListRef = database.ref('userList');
+
+    const nameInput = document.getElementById('nameInput');
+    const btnRegister = document.getElementById('btnRegister');
+    const usersGrid = document.getElementById('usersGrid');
+    const noUsersMsg = document.getElementById('noUsersMsg');
+    const loginDot = document.getElementById('loginDot');
+    const loginSyncText = document.getElementById('loginSyncText');
+    const loginScreen = document.getElementById('loginScreen');
+    const appScreen = document.getElementById('appScreen');
+    const headerAvatar = document.getElementById('headerAvatar');
+    const headerName = document.getElementById('headerName');
     const nominalInput = document.getElementById('nominalInput');
     const noteInput = document.getElementById('noteInput');
     const balanceDisplay = document.getElementById('balanceDisplay');
@@ -442,52 +585,210 @@
     const emptyState = document.getElementById('emptyState');
     const btnClearAll = document.getElementById('btnClearAll');
     const clearModal = document.getElementById('clearModal');
-    const importFile = document.getElementById('importFile');
+    const clearModalUser = document.getElementById('clearModalUser');
+    const deleteUserModal = document.getElementById('deleteUserModal');
+    const deleteModalUser = document.getElementById('deleteModalUser');
     const toastContainer = document.getElementById('toastContainer');
     const txCount = document.getElementById('txCount');
     const syncText = document.getElementById('syncText');
     const syncIcon = document.getElementById('syncIcon');
     const syncTime = document.getElementById('syncTime');
 
-    // ==================== UTILS ====================
-    function formatRp(n) {
-        return 'Rp ' + Math.abs(n).toLocaleString('id-ID');
-    }
+    function formatRp(n) { return 'Rp ' + Math.abs(n).toLocaleString('id-ID'); }
     function formatDate(ts) {
         const d = new Date(ts);
         const h = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
         const b = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        return `${h[d.getDay()]}, ${d.getDate()} ${b[d.getMonth()]} ${d.getFullYear()} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        return `${h[d.getDay()]}, ${d.getDate()} ${b[d.getMonth()]} ${d.getFullYear()} \u00B7 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-    
-    function updateSyncStatus(connected) {
-        if (connected) {
-            syncText.textContent = 'Tersinkronisasi';
-            syncIcon.className = 'fa-solid fa-circle-nodes online';
-        } else {
-            syncText.textContent = 'Mode Offline';
-            syncIcon.className = 'fa-solid fa-plug offline';
-        }
+    function sanitizeKey(name) {
+        return name.trim().toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, '_').replace(/^_|_$/g, '');
     }
-    
-    function setSyncing(isSyncingState) {
-        if (isSyncingState) {
-            syncIcon.className = 'fa-solid fa-spinner syncing';
-            syncText.textContent = 'Menyinkronkan...';
-        } else if (syncIcon.className !== 'fa-solid fa-circle-nodes online') {
-            const connState = database.goOnline ? true : false;
-            updateSyncStatus(connState);
-        }
+    function getAvatarColor(name) {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        const colors = ['#00c97b','#00a8e8','#e056a0','#f09030','#8b5cf6','#14b8a6','#ef4444','#6366f1','#d946ef','#0ea5e9','#f59e0b','#10b981'];
+        return colors[Math.abs(hash) % colors.length];
+    }
+    function getInitials(name) {
+        const words = name.trim().split(/\s+/);
+        if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+        return name.trim().substring(0, 2).toUpperCase();
     }
 
-    // ==================== PERHITUNGAN ====================
+    // Navigasi
+    function showLogin() {
+        currentUser = null;
+        transactions = [];
+        if (syncListener) { userTxRef('').off(); syncListener = null; }
+        appScreen.classList.remove('visible');
+        appScreen.classList.add('hidden');
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('visible');
+        nameInput.value = '';
+        nameInput.focus();
+    }
+    function showApp(user) {
+        currentUser = user;
+        loginScreen.classList.remove('visible');
+        loginScreen.classList.add('hidden');
+        appScreen.classList.remove('hidden');
+        appScreen.classList.add('visible');
+        const color = getAvatarColor(user.name);
+        headerAvatar.textContent = getInitials(user.name);
+        headerAvatar.style.background = color;
+        headerAvatar.style.borderColor = color + '44';
+        headerName.textContent = user.name;
+        nominalInput.value = '';
+        noteInput.value = '';
+        noteInput.style.height = 'auto';
+        attachUserListener(user.key);
+    }
+    function logout() {
+        showLogin();
+        showToast('Kembali ke daftar pengguna', 'success');
+    }
+
+    // Koneksi
+    function updateConnUI(connected) {
+        if (connected) {
+            loginDot.className = 'dot on';
+            loginSyncText.textContent = 'Terhubung ke cloud';
+            if (currentUser) { syncText.textContent = 'Tersinkronisasi'; syncIcon.className = 'fa-solid fa-circle-nodes online'; }
+        } else {
+            loginDot.className = 'dot off';
+            loginSyncText.textContent = 'Mode offline';
+            if (currentUser) { syncText.textContent = 'Mode Offline'; syncIcon.className = 'fa-solid fa-plug offline'; }
+        }
+    }
+    function setSyncingState(v) {
+        if (v) { syncIcon.className = 'fa-solid fa-spinner syncing'; syncText.textContent = 'Menyinkronkan...'; }
+    }
+
+    // Daftar pengguna
+    function attachUsersListener() {
+        usersListener = userListRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            userList = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    const u = data[key];
+                    if (u && u.name) userList.push({ key: key, name: u.name, createdAt: u.createdAt || 0 });
+                });
+                userList.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            renderUsersGrid();
+        }, (err) => { console.error('Gagal memuat daftar pengguna:', err); updateConnUI(false); });
+    }
+
+    function renderUsersGrid() {
+        if (userList.length === 0) {
+            usersGrid.innerHTML = '';
+            usersGrid.appendChild(noUsersMsg);
+            noUsersMsg.style.display = '';
+            return;
+        }
+        noUsersMsg.style.display = 'none';
+        usersGrid.innerHTML = userList.map(u => {
+            const color = getAvatarColor(u.name);
+            return `<div class="user-card" onclick="enterAsUser('${u.key}')" data-userkey="${u.key}">
+                <div class="user-avatar" style="background:${color}">${esc(getInitials(u.name))}</div>
+                <div class="user-info">
+                    <div class="user-name">${esc(u.name)}</div>
+                    <div class="user-meta" id="userMeta_${u.key}"><span><i class="fa-solid fa-receipt"></i> <em>memuat...</em></span></div>
+                </div>
+                <i class="fa-solid fa-chevron-right user-arrow"></i>
+                <button class="user-del-btn" onclick="event.stopPropagation(); showDeleteUserModal('${u.key}','${esc(u.name)}')" aria-label="Hapus pengguna"><i class="fa-solid fa-xmark"></i></button>
+            </div>`;
+        }).join('');
+        userList.forEach(u => {
+            userTxRef(u.key).once('value', (snap) => {
+                const metaEl = document.getElementById('userMeta_' + u.key);
+                if (!metaEl) return;
+                const txData = snap.val();
+                let count = 0, bal = 0;
+                if (txData) { Object.values(txData).forEach(t => { if (t && t.type && t.amount) { count++; if (t.type === 'in') bal += t.amount; else bal -= t.amount; } }); }
+                const balStr = (bal < 0 ? '-' : '') + formatRp(bal);
+                metaEl.innerHTML = `<span><i class="fa-solid fa-receipt"></i> ${count} transaksi</span><span><i class="fa-solid fa-wallet"></i> ${balStr}</span>`;
+            });
+        });
+    }
+
+    // Daftar & masuk
+    window.registerAndEnter = function() {
+        const rawName = nameInput.value.trim();
+        if (!rawName) { showToast('Masukkan nama terlebih dahulu', 'error'); nameInput.focus(); return; }
+        if (rawName.length < 2) { showToast('Nama minimal 2 karakter', 'error'); nameInput.focus(); return; }
+        const key = sanitizeKey(rawName);
+        if (!key) { showToast('Nama tidak valid, gunakan huruf dan angka', 'error'); nameInput.focus(); return; }
+        const existing = userList.find(u => u.key === key);
+        if (existing) { saveLastUser(key); showApp(existing); showToast(`Selamat datang, ${existing.name}`, 'success'); return; }
+        btnRegister.disabled = true;
+        btnRegister.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendaftarkan...';
+        userListRef.child(key).set({ name: rawName, createdAt: Date.now() }).then(() => {
+            saveLastUser(key);
+            setTimeout(() => {
+                const user = userList.find(u => u.key === key);
+                if (user) { showApp(user); showToast(`Profil "${rawName}" berhasil dibuat`, 'success'); }
+                else showToast('Profil dibuat, silakan pilih dari daftar', 'success');
+            }, 500);
+        }).catch(err => { showToast('Gagal mendaftar: ' + err.message, 'error'); }).finally(() => {
+            btnRegister.disabled = false;
+            btnRegister.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Daftar & Masuk';
+        });
+    };
+
+    window.enterAsUser = function(key) {
+        const user = userList.find(u => u.key === key);
+        if (!user) { showToast('Pengguna tidak ditemukan', 'error'); return; }
+        saveLastUser(key);
+        showApp(user);
+        showToast(`Selamat datang, ${user.name}`, 'success');
+    };
+
+    function saveLastUser(key) { try { localStorage.setItem('tabungan_lastUser', key); } catch(e) {} }
+
+    // Hapus pengguna
+    function showDeleteUserModal(key, name) { pendingDeleteUserKey = key; deleteModalUser.textContent = name; deleteUserModal.classList.add('show'); }
+    function closeDeleteUserModal() { deleteUserModal.classList.remove('show'); pendingDeleteUserKey = null; }
+    async function confirmDeleteUser() {
+        const key = pendingDeleteUserKey;
+        if (!key) return;
+        closeDeleteUserModal();
+        try { await userTxRef(key).remove(); await userListRef.child(key).remove(); showToast('Pengguna berhasil dihapus dari cloud', 'warn'); }
+        catch (err) { showToast('Gagal menghapus: ' + err.message, 'error'); }
+    }
+    deleteUserModal.addEventListener('click', function(e) { if (e.target === deleteUserModal) closeDeleteUserModal(); });
+
+    // Transaksi
+    function attachUserListener(userKey) {
+        if (syncListener) userTxRef(currentUser ? currentUser.key : '').off();
+        setSyncingState(true);
+        syncListener = userTxRef(userKey).on('value', (snapshot) => {
+            const data = snapshot.val();
+            const newTx = [];
+            if (data) { Object.keys(data).forEach(id => { const t = data[id]; if (t && t.id && (t.type === 'in' || t.type === 'out') && typeof t.amount === 'number') newTx.push(t); }); }
+            transactions = newTx;
+            render();
+            setSyncingState(false);
+            updateConnUI(true);
+            syncTime.textContent = new Date().toLocaleTimeString('id-ID');
+        }, (error) => { setSyncingState(false); updateConnUI(false); showToast('Gagal terhubung ke cloud', 'error'); });
+    }
+    function forceSync() {
+        if (!currentUser) return;
+        showToast('Menyinkronkan dengan cloud...', 'success');
+        if (syncListener) userTxRef(currentUser.key).off();
+        attachUserListener(currentUser.key);
+        renderUsersGrid();
+    }
+
     function calc() {
         let i = 0, o = 0;
         transactions.forEach(t => { if (t.type === 'in') i += t.amount; else o += t.amount; });
         return { i, o, bal: i - o };
     }
-
     function updateUI() {
         const { i, o, bal } = calc();
         balanceDisplay.textContent = (bal < 0 ? '-' : '') + formatRp(bal);
@@ -495,7 +796,6 @@
         totalOutEl.textContent = formatRp(o);
         txCount.textContent = transactions.length > 0 ? `(${transactions.length})` : '';
     }
-    
     function flashBalance(type) {
         balanceDisplay.classList.remove('flash-up','flash-down');
         void balanceDisplay.offsetWidth;
@@ -503,7 +803,6 @@
         setTimeout(() => balanceDisplay.classList.remove('flash-up','flash-down'), 600);
     }
 
-    // ==================== RENDER ====================
     function render() {
         const sorted = [...transactions].sort((a,b) => b.ts - a.ts);
         if (sorted.length === 0) {
@@ -511,8 +810,7 @@
             historyList.appendChild(emptyState);
             emptyState.style.display = '';
             btnClearAll.style.display = 'none';
-            updateUI();
-            return;
+            updateUI(); return;
         }
         emptyState.style.display = 'none';
         btnClearAll.style.display = '';
@@ -531,179 +829,41 @@
         updateUI();
     }
 
-    // ==================== FIREBASE CRUD ====================
-    function pushToFirebase(transaction) {
-        return transactionsRef.child(transaction.id).set(transaction);
-    }
-    
-    function removeFromFirebase(id) {
-        return transactionsRef.child(id).remove();
-    }
-    
-    function clearAllFirebase() {
-        return transactionsRef.remove();
-    }
-    
-    function forceSync() {
-        showToast('Menyinkronkan dengan cloud...', 'success');
-        // Re-attach listener untuk refresh
-        if (syncListener) {
-            syncListener.off();
-        }
-        attachFirebaseListener();
-    }
-    
-    function attachFirebaseListener() {
-        setSyncing(true);
-        syncListener = transactionsRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            const newTransactions = [];
-            if (data) {
-                Object.keys(data).forEach(key => {
-                    const tx = data[key];
-                    if (tx && tx.id && (tx.type === 'in' || tx.type === 'out') && typeof tx.amount === 'number') {
-                        newTransactions.push(tx);
-                    }
-                });
-            }
-            transactions = newTransactions;
-            render();
-            setSyncing(false);
-            updateSyncStatus(true);
-            syncTime.textContent = new Date().toLocaleTimeString('id-ID');
-        }, (error) => {
-            console.error('Firebase error:', error);
-            setSyncing(false);
-            updateSyncStatus(false);
-            showToast('Gagal terhubung ke cloud, data disimpan lokal sementara', 'error');
-        });
-    }
-    
-    // ==================== OPERASI TRANSAKSI ====================
     async function addTransaction(type) {
+        if (!currentUser) return;
         const raw = nominalInput.value.replace(/[^0-9]/g, '');
         const amount = parseInt(raw, 10);
-        if (!amount || amount <= 0) {
-            showToast('Masukkan nominal yang valid', 'error');
-            nominalInput.focus(); return;
-        }
-        if (type === 'out') {
-            const { bal } = calc();
-            if (amount > bal) { showToast('Saldo tidak mencukupi', 'error'); return; }
-        }
-        
-        const newTransaction = {
-            id: Date.now().toString(36) + Math.random().toString(36).substr(2,8),
-            type: type,
-            amount: amount,
-            note: noteInput.value.trim(),
-            ts: Date.now(),
-            createdAt: new Date().toISOString()
-        };
-        
+        if (!amount || amount <= 0) { showToast('Masukkan nominal yang valid', 'error'); nominalInput.focus(); return; }
+        if (type === 'out') { const { bal } = calc(); if (amount > bal) { showToast('Saldo tidak mencukupi', 'error'); return; } }
+        const tx = { id: Date.now().toString(36) + Math.random().toString(36).substr(2,8), type, amount, note: noteInput.value.trim(), ts: Date.now(), createdAt: new Date().toISOString() };
         try {
-            await pushToFirebase(newTransaction);
+            await userTxRef(currentUser.key).child(tx.id).set(tx);
             flashBalance(type);
             nominalInput.value = '';
             noteInput.value = '';
             noteInput.style.height = 'auto';
             nominalInput.focus();
-            showToast(`${type === 'in' ? 'Uang masuk' : 'Uang keluar'} ${formatRp(amount)} tersimpan di cloud`, 'success');
-        } catch (error) {
-            showToast('Gagal menyimpan ke cloud: ' + error.message, 'error');
-        }
+            showToast(`${type === 'in' ? 'Uang masuk' : 'Uang keluar'} ${formatRp(amount)} tersimpan`, 'success');
+        } catch (err) { showToast('Gagal menyimpan: ' + err.message, 'error'); }
     }
-    
+
     async function deleteTransaction(id) {
-        try {
-            await removeFromFirebase(id);
-            showToast('Transaksi dihapus dari cloud', 'warn');
-        } catch (error) {
-            showToast('Gagal menghapus: ' + error.message, 'error');
-        }
+        if (!currentUser) return;
+        try { await userTxRef(currentUser.key).child(id).remove(); showToast('Transaksi dihapus', 'warn'); }
+        catch (err) { showToast('Gagal menghapus: ' + err.message, 'error'); }
     }
-    
+
     async function confirmClearAll() {
-        try {
-            await clearAllFirebase();
-            closeClearModal();
-            showToast('Semua riwayat dihapus dari cloud', 'warn');
-        } catch (error) {
-            showToast('Gagal menghapus: ' + error.message, 'error');
-        }
+        if (!currentUser) return;
+        try { await userTxRef(currentUser.key).remove(); closeClearModal(); showToast('Semua riwayat dihapus', 'warn'); }
+        catch (err) { showToast('Gagal menghapus: ' + err.message, 'error'); }
     }
-    
-    // ==================== BACKUP (Export/Import) ====================
-    function exportBackup() {
-        if (transactions.length === 0) {
-            showToast('Tidak ada data untuk di-export', 'warn'); return;
-        }
-        const { i, o, bal } = calc();
-        const backup = {
-            app: 'Tabungan Saya (Cloud Sync)',
-            exported: new Date().toISOString(),
-            summary: { total_masuk: i, total_keluar: o, saldo: bal, jumlah_transaksi: transactions.length },
-            transactions: transactions
-        };
-        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const date = new Date();
-        const fname = `tabungan_backup_${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}.json`;
-        a.href = url; a.download = fname; a.click();
-        URL.revokeObjectURL(url);
-        showToast(`Backup "${fname}" berhasil diunduh`, 'success');
-    }
-    
-    function triggerImport() { importFile.click(); }
-    importFile.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async function(ev) {
-            try {
-                const data = JSON.parse(ev.target.result);
-                let txArr = null;
-                if (Array.isArray(data)) {
-                    txArr = data;
-                } else if (data && Array.isArray(data.transactions)) {
-                    txArr = data.transactions;
-                } else {
-                    showToast('Format file tidak dikenali', 'error'); return;
-                }
-                const valid = txArr.filter(t =>
-                    t && t.id && (t.type === 'in' || t.type === 'out') && typeof t.amount === 'number' && t.amount > 0 && typeof t.ts === 'number'
-                );
-                if (valid.length === 0) {
-                    showToast('File tidak berisi data transaksi valid', 'error'); return;
-                }
-                const existingIds = new Set(transactions.map(t => t.id));
-                const newTx = valid.filter(t => !existingIds.has(t.id));
-                
-                // Upload ke Firebase
-                let successCount = 0;
-                for (const tx of newTx) {
-                    try {
-                        await transactionsRef.child(tx.id).set(tx);
-                        successCount++;
-                    } catch (err) {
-                        console.error('Gagal import transaksi:', tx.id, err);
-                    }
-                }
-                showToast(`Berhasil import ${successCount} transaksi ke cloud`, 'success');
-            } catch(err) {
-                showToast('Gagal membaca file backup', 'error');
-            }
-        };
-        reader.readAsText(file);
-        this.value = '';
-    });
-    
-    // ==================== MODAL & TOAST ====================
-    function showClearModal() { clearModal.classList.add('show'); }
+
+    // Modal & toast
+    function showClearModal() { if (!currentUser) return; clearModalUser.textContent = currentUser.name; clearModal.classList.add('show'); }
     function closeClearModal() { clearModal.classList.remove('show'); }
     clearModal.addEventListener('click', function(e) { if (e.target === clearModal) closeClearModal(); });
-    
+
     function showToast(msg, type) {
         const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation' };
         const t = document.createElement('div');
@@ -712,37 +872,51 @@
         toastContainer.appendChild(t);
         setTimeout(() => { if (t.parentNode) t.remove(); }, 2800);
     }
-    
-    // ==================== INPUT FORMATTING ====================
-    nominalInput.addEventListener('input', function() {
-        const c = this.value.replace(/[^0-9]/g, '');
-        this.value = c ? parseInt(c, 10).toLocaleString('id-ID') : '';
-    });
-    noteInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-    });
-    
-    // ==================== KEYBOARD ====================
+
+    // Input
+    nominalInput.addEventListener('input', function() { const c = this.value.replace(/[^0-9]/g, ''); this.value = c ? parseInt(c, 10).toLocaleString('id-ID') : ''; });
+    noteInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
+
+    // Keyboard
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey && document.activeElement !== noteInput) {
-            e.preventDefault(); addTransaction('in');
+        if (!currentUser && e.key === 'Enter' && document.activeElement === nameInput) { e.preventDefault(); registerAndEnter(); return; }
+        if (currentUser && e.key === 'Enter' && !e.shiftKey && document.activeElement !== noteInput) { e.preventDefault(); addTransaction('in'); return; }
+        if (e.key === 'Escape') { closeClearModal(); closeDeleteUserModal(); }
+    });
+
+    // Koneksi deteksi
+    database.ref('.info/connected').on('value', (snap) => { updateConnUI(snap.val() === true); });
+    window.addEventListener('online', () => { showToast('Koneksi kembali online', 'success'); if (currentUser) forceSync(); });
+    window.addEventListener('offline', () => { updateConnUI(false); showToast('Koneksi terputus', 'warn'); });
+
+    // Init
+    attachUsersListener();
+    nameInput.focus();
+
+    // Auto-login pengguna terakhir
+    try {
+        const lastUser = localStorage.getItem('tabungan_lastUser');
+        if (lastUser) {
+            const checkTimer = setInterval(() => {
+                clearInterval(checkTimer);
+                const found = userList.find(u => u.key === lastUser);
+                if (found) {
+                    currentUser = found;
+                    loginScreen.classList.remove('visible');
+                    loginScreen.classList.add('hidden');
+                    appScreen.classList.remove('hidden');
+                    appScreen.classList.add('visible');
+                    const color = getAvatarColor(found.name);
+                    headerAvatar.textContent = getInitials(found.name);
+                    headerAvatar.style.background = color;
+                    headerAvatar.style.borderColor = color + '44';
+                    headerName.textContent = found.name;
+                    attachUserListener(found.key);
+                }
+            }, 600);
+            setTimeout(() => clearInterval(checkTimer), 3000);
         }
-        if (e.key === 'Escape') closeClearModal();
-    });
-    
-    // ==================== INIT ====================
-    attachFirebaseListener();
-    
-    // Deteksi koneksi
-    window.addEventListener('online', () => {
-        showToast('Koneksi kembali online, sinkronisasi otomatis', 'success');
-        forceSync();
-    });
-    window.addEventListener('offline', () => {
-        updateSyncStatus(false);
-        showToast('Koneksi terputus, perubahan akan disimpan saat online kembali', 'warn');
-    });
+    } catch(e) {}
 </script>
 
 </body>
