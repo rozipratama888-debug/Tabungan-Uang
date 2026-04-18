@@ -103,11 +103,11 @@
             letter-spacing: 1.2px; font-weight: 500; margin-bottom: 10px;
         }
         .login-input-wrap {
-            position: relative; margin-bottom: 14px;
+            position: relative; margin-bottom: 10px;
         }
-        .login-input-wrap i {
+        .login-input-wrap > i.icon-left {
             position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            color: var(--muted); font-size: 14px; pointer-events: none;
+            color: var(--muted); font-size: 14px; pointer-events: none; z-index: 1;
         }
         .login-input {
             width: 100%; background: var(--bg2); border: 1.5px solid var(--border);
@@ -117,6 +117,31 @@
         }
         .login-input::placeholder { color: rgba(122,158,140,0.4); font-weight: 400; }
         .login-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+        .pw-wrap {
+            position: relative; margin-bottom: 10px;
+        }
+        .pw-wrap > i.icon-left {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 14px; pointer-events: none; z-index: 1;
+        }
+        .pw-wrap input {
+            width: 100%; background: var(--bg2); border: 1.5px solid var(--border);
+            border-radius: 14px; padding: 14px 46px 14px 42px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 500;
+            color: var(--fg); outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .pw-wrap input::placeholder { color: rgba(122,158,140,0.4); font-weight: 400; }
+        .pw-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+        .pw-toggle {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--muted); cursor: pointer;
+            font-size: 14px; padding: 4px; transition: color 0.2s; z-index: 1;
+        }
+        .pw-toggle:hover { color: var(--fg); }
+        .pw-hint {
+            font-size: 11px; color: var(--muted); margin: -4px 0 10px 4px; opacity: 0.7;
+        }
 
         .btn-register {
             width: 100%; padding: 15px; border: none; border-radius: 14px;
@@ -368,12 +393,12 @@
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-box {
             background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
-            padding: 26px 22px; max-width: 360px; width: 100%; text-align: center;
+            padding: 26px 22px; max-width: 380px; width: 100%; text-align: center;
             transform: scale(0.9); transition: transform 0.3s;
         }
         .modal-overlay.show .modal-box { transform: scale(1); }
         .modal-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-        .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
         .modal-btns { display: flex; gap: 10px; }
         .modal-btns button {
             flex: 1; padding: 11px; border-radius: 12px;
@@ -384,6 +409,49 @@
         .modal-btns .btn-cancel:hover { background: var(--card-hover); color: var(--fg); }
         .modal-btns .btn-danger { background: var(--red); color: #2a0a0e; }
         .modal-btns .btn-danger:hover { box-shadow: 0 4px 20px rgba(255,92,106,0.3); }
+        .modal-btns .btn-primary { background: var(--accent); color: #052e1a; }
+        .modal-btns .btn-primary:hover { box-shadow: 0 4px 20px rgba(0,230,138,0.3); }
+        .modal-btns .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+        .pw-modal-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 56px; height: 56px; border-radius: 16px;
+            background: var(--accent-dim); border: 1px solid rgba(0,230,138,0.2);
+            font-size: 22px; color: var(--accent); margin-bottom: 14px;
+        }
+        .pw-modal-icon.create-mode { background: var(--gold-dim); border-color: rgba(255,209,102,0.2); color: var(--gold); }
+
+        .modal-pw-inputs { margin-bottom: 10px; text-align: left; }
+        .modal-pw-inputs .pw-field { position: relative; }
+        .modal-pw-inputs .pw-field > i {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 13px; pointer-events: none; z-index: 1;
+        }
+        .modal-pw-inputs input {
+            width: 100%; background: var(--bg2); border: 1.5px solid var(--border);
+            border-radius: 12px; padding: 13px 44px 13px 40px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500;
+            color: var(--fg); outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .modal-pw-inputs input::placeholder { color: rgba(122,158,140,0.4); font-weight: 400; }
+        .modal-pw-inputs input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+        .modal-pw-inputs .pw-field + .pw-field { margin-top: 10px; }
+        .modal-pw-hint {
+            font-size: 11px; color: var(--muted); margin-top: 6px; opacity: 0.7;
+        }
+
+        .locked-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 10px; color: var(--accent); background: var(--accent-dim);
+            padding: 2px 8px; border-radius: 6px; margin-left: 8px; font-weight: 500;
+            vertical-align: middle;
+        }
+        .no-pw-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 10px; color: var(--gold); background: var(--gold-dim);
+            padding: 2px 8px; border-radius: 6px; margin-left: 8px; font-weight: 500;
+            vertical-align: middle;
+        }
 
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -408,6 +476,7 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Modal: Hapus Semua Riwayat -->
 <div class="modal-overlay" id="clearModal">
     <div class="modal-box">
         <h3>Hapus Semua Riwayat</h3>
@@ -419,6 +488,7 @@
     </div>
 </div>
 
+<!-- Modal: Hapus Pengguna -->
 <div class="modal-overlay" id="deleteUserModal">
     <div class="modal-box">
         <h3>Hapus Pengguna</h3>
@@ -430,27 +500,74 @@
     </div>
 </div>
 
+<!-- Modal: Sandi (Masuk / Buat Sandi) -->
+<div class="modal-overlay" id="passwordModal">
+    <div class="modal-box">
+        <div class="pw-modal-icon" id="pwModalIcon"><i class="fa-solid fa-lock"></i></div>
+        <h3 id="pwModalTitle">Masukkan Sandi</h3>
+        <p id="pwModalDesc">Masukkan sandi untuk melanjutkan.</p>
+        <div class="modal-pw-inputs" id="pwInputsWrap">
+            <div class="pw-field">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="pwModalInput" placeholder="Sandi..." maxlength="30" autocomplete="off">
+                <button class="pw-toggle" onclick="togglePwVis('pwModalInput', this)" type="button" aria-label="Tampilkan sandi">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-pw-inputs" id="pwConfirmWrap" style="display:none;">
+            <div class="pw-field">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="pwModalConfirm" placeholder="Konfirmasi sandi..." maxlength="30" autocomplete="off">
+                <button class="pw-toggle" onclick="togglePwVis('pwModalConfirm', this)" type="button" aria-label="Tampilkan sandi">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-pw-hint" id="pwModalHint">Minimal 4 karakter</div>
+        <div class="modal-btns" style="margin-top:16px;">
+            <button class="btn-cancel" onclick="closePwModal()">Batal</button>
+            <button class="btn-primary" id="pwSubmitBtn" onclick="handlePwSubmit()">Masuk</button>
+        </div>
+    </div>
+</div>
+
 <!-- ===== LAYAR LOGIN ===== -->
 <div class="screen visible" id="loginScreen">
     <div class="login-logo">
         <div class="icon-wrap"><i class="fa-solid fa-cloud"></i></div>
         <h1>Tabungan Saya</h1>
-        <p>Cloud sync &middot; Multi pengguna</p>
+        <p>Cloud sync &middot; Terlindungi sandi</p>
     </div>
     <div class="login-box">
-        <div class="label-text">Daftar atau masuk</div>
+        <div class="label-text">Buat akun baru</div>
         <div class="login-input-wrap">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" class="login-input" id="nameInput" placeholder="Ketik nama kamu..." maxlength="20" autocomplete="off">
+            <i class="fa-solid fa-user icon-left"></i>
+            <input type="text" class="login-input" id="nameInput" placeholder="Nama kamu..." maxlength="20" autocomplete="off">
         </div>
+        <div class="pw-wrap">
+            <i class="fa-solid fa-lock icon-left"></i>
+            <input type="password" id="pwRegInput" placeholder="Buat sandi..." maxlength="30" autocomplete="off">
+            <button class="pw-toggle" onclick="togglePwVis('pwRegInput', this)" type="button" aria-label="Tampilkan sandi">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+        </div>
+        <div class="pw-wrap">
+            <i class="fa-solid fa-lock icon-left"></i>
+            <input type="password" id="pwRegConfirm" placeholder="Konfirmasi sandi..." maxlength="30" autocomplete="off">
+            <button class="pw-toggle" onclick="togglePwVis('pwRegConfirm', this)" type="button" aria-label="Tampilkan sandi">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+        </div>
+        <div class="pw-hint">Sandi minimal 4 karakter, hanya kamu yang tahu</div>
         <button class="btn-register" id="btnRegister" onclick="registerAndEnter()">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Daftar & Masuk
+            <i class="fa-solid fa-user-plus"></i> Daftar Akun Baru
         </button>
-        <div class="divider">atau pilih profil</div>
+        <div class="divider">atau masuk ke profil yang sudah ada</div>
         <div class="users-grid" id="usersGrid">
             <div class="no-users" id="noUsersMsg">
                 <i class="fa-solid fa-users-slash"></i>
-                <p>Belum ada pengguna terdaftar.<br>Masukkan nama di atas untuk mulai.</p>
+                <p>Belum ada pengguna terdaftar.<br>Isi nama & sandi di atas untuk mulai.</p>
             </div>
         </div>
     </div>
@@ -464,13 +581,13 @@
 <div class="screen hidden" id="appScreen">
     <header class="header">
         <div class="header-left">
-            <div class="header-avatar" id="headerAvatar" onclick="logout()" title="Ganti pengguna"></div>
+            <div class="header-avatar" id="headerAvatar" onclick="logout()" title="Kunci & ganti pengguna"></div>
             <div class="header-info">
                 <h1 id="headerName">-</h1>
-                <p>Tabungan pribadi &middot; Cloud sync</p>
+                <p>Tabungan pribadi &middot; Terlindungi sandi</p>
             </div>
         </div>
-        <button class="btn-logout" onclick="logout()" aria-label="Ganti pengguna" title="Ganti pengguna">
+        <button class="btn-logout" onclick="logout()" aria-label="Kunci" title="Kunci & ganti pengguna">
             <i class="fa-solid fa-right-from-bracket"></i>
         </button>
     </header>
@@ -559,14 +676,20 @@
     let currentUser = null;
     let transactions = [];
     let userList = [];
+    let userPwStatus = {}; // key -> true/false (has password)
     let syncListener = null;
     let usersListener = null;
     let pendingDeleteUserKey = null;
+    let pendingLoginUser = null;
+    let pwMode = 'verify'; // 'verify' atau 'create'
 
     function userTxRef(userKey) { return database.ref('users/' + userKey + '/transactions'); }
     const userListRef = database.ref('userList');
 
+    // === ELEMEN DOM ===
     const nameInput = document.getElementById('nameInput');
+    const pwRegInput = document.getElementById('pwRegInput');
+    const pwRegConfirm = document.getElementById('pwRegConfirm');
     const btnRegister = document.getElementById('btnRegister');
     const usersGrid = document.getElementById('usersGrid');
     const noUsersMsg = document.getElementById('noUsersMsg');
@@ -593,7 +716,18 @@
     const syncText = document.getElementById('syncText');
     const syncIcon = document.getElementById('syncIcon');
     const syncTime = document.getElementById('syncTime');
+    const passwordModal = document.getElementById('passwordModal');
+    const pwModalIcon = document.getElementById('pwModalIcon');
+    const pwModalTitle = document.getElementById('pwModalTitle');
+    const pwModalDesc = document.getElementById('pwModalDesc');
+    const pwModalInput = document.getElementById('pwModalInput');
+    const pwModalConfirm = document.getElementById('pwModalConfirm');
+    const pwInputsWrap = document.getElementById('pwInputsWrap');
+    const pwConfirmWrap = document.getElementById('pwConfirmWrap');
+    const pwModalHint = document.getElementById('pwModalHint');
+    const pwSubmitBtn = document.getElementById('pwSubmitBtn');
 
+    // === UTILITAS ===
     function formatRp(n) { return 'Rp ' + Math.abs(n).toLocaleString('id-ID'); }
     function formatDate(ts) {
         const d = new Date(ts);
@@ -617,7 +751,29 @@
         return name.trim().substring(0, 2).toUpperCase();
     }
 
-    // Navigasi
+    // === HASH SANDI (SHA-256 + salt) ===
+    async function hashPassword(pw) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(pw + '_tabungan_rozi_salt_2024!x');
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // === TOGGLE VISIBILITAS SANDI ===
+    function togglePwVis(inputId, btn) {
+        const inp = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash';
+        } else {
+            inp.type = 'password';
+            icon.className = 'fa-solid fa-eye';
+        }
+    }
+
+    // === NAVIGASI LAYAR ===
     function showLogin() {
         currentUser = null;
         transactions = [];
@@ -627,6 +783,12 @@
         loginScreen.classList.remove('hidden');
         loginScreen.classList.add('visible');
         nameInput.value = '';
+        pwRegInput.value = '';
+        pwRegConfirm.value = '';
+        // Reset tipe input ke password
+        pwRegInput.type = 'password';
+        pwRegConfirm.type = 'password';
+        document.querySelectorAll('.login-box .pw-toggle i').forEach(i => i.className = 'fa-solid fa-eye');
         nameInput.focus();
     }
     function showApp(user) {
@@ -647,10 +809,10 @@
     }
     function logout() {
         showLogin();
-        showToast('Kembali ke daftar pengguna', 'success');
+        showToast('Akun terkunci', 'success');
     }
 
-    // Koneksi
+    // === STATUS KONEKSI ===
     function updateConnUI(connected) {
         if (connected) {
             loginDot.className = 'dot on';
@@ -666,7 +828,7 @@
         if (v) { syncIcon.className = 'fa-solid fa-spinner syncing'; syncText.textContent = 'Menyinkronkan...'; }
     }
 
-    // Daftar pengguna
+    // === DAFTAR PENGGUNA (LISTEN) ===
     function attachUsersListener() {
         usersListener = userListRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -674,7 +836,7 @@
             if (data) {
                 Object.keys(data).forEach(key => {
                     const u = data[key];
-                    if (u && u.name) userList.push({ key: key, name: u.name, createdAt: u.createdAt || 0 });
+                    if (u && u.name) userList.push({ key: key, name: u.name, createdAt: u.createdAt || 0, hasPassword: !!u.passwordHash });
                 });
                 userList.sort((a, b) => a.name.localeCompare(b.name));
             }
@@ -692,10 +854,13 @@
         noUsersMsg.style.display = 'none';
         usersGrid.innerHTML = userList.map(u => {
             const color = getAvatarColor(u.name);
-            return `<div class="user-card" onclick="enterAsUser('${u.key}')" data-userkey="${u.key}">
+            const badge = u.hasPassword
+                ? '<span class="locked-badge"><i class="fa-solid fa-shield-halved"></i> Terlindungi</span>'
+                : '<span class="no-pw-badge"><i class="fa-solid fa-lock-open"></i> Belum ada sandi</span>';
+            return `<div class="user-card" onclick="openPwModal('${u.key}')" data-userkey="${u.key}">
                 <div class="user-avatar" style="background:${color}">${esc(getInitials(u.name))}</div>
                 <div class="user-info">
-                    <div class="user-name">${esc(u.name)}</div>
+                    <div class="user-name">${esc(u.name)}${badge}</div>
                     <div class="user-meta" id="userMeta_${u.key}"><span><i class="fa-solid fa-receipt"></i> <em>memuat...</em></span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right user-arrow"></i>
@@ -715,41 +880,162 @@
         });
     }
 
-    // Daftar & masuk
-    window.registerAndEnter = function() {
+    // === DAFTAR AKUN BARU ===
+    window.registerAndEnter = async function() {
         const rawName = nameInput.value.trim();
+        const pw = pwRegInput.value;
+        const pwC = pwRegConfirm.value;
+
         if (!rawName) { showToast('Masukkan nama terlebih dahulu', 'error'); nameInput.focus(); return; }
         if (rawName.length < 2) { showToast('Nama minimal 2 karakter', 'error'); nameInput.focus(); return; }
+        if (!pw || pw.length < 4) { showToast('Sandi minimal 4 karakter', 'error'); pwRegInput.focus(); return; }
+        if (pw !== pwC) { showToast('Konfirmasi sandi tidak cocok', 'error'); pwRegConfirm.focus(); return; }
+
         const key = sanitizeKey(rawName);
         if (!key) { showToast('Nama tidak valid, gunakan huruf dan angka', 'error'); nameInput.focus(); return; }
+
         const existing = userList.find(u => u.key === key);
-        if (existing) { saveLastUser(key); showApp(existing); showToast(`Selamat datang, ${existing.name}`, 'success'); return; }
+        if (existing) { showToast('Nama "' + existing.name + '" sudah terdaftar. Pilih dari daftar profil di bawah.', 'error'); return; }
+
         btnRegister.disabled = true;
         btnRegister.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendaftarkan...';
-        userListRef.child(key).set({ name: rawName, createdAt: Date.now() }).then(() => {
-            saveLastUser(key);
+
+        try {
+            const hash = await hashPassword(pw);
+            await userListRef.child(key).set({ name: rawName, createdAt: Date.now(), passwordHash: hash });
+            showToast('Akun "' + rawName + '" berhasil dibuat', 'success');
+            // Tunggu listener update, lalu masuk
             setTimeout(() => {
                 const user = userList.find(u => u.key === key);
-                if (user) { showApp(user); showToast(`Profil "${rawName}" berhasil dibuat`, 'success'); }
-                else showToast('Profil dibuat, silakan pilih dari daftar', 'success');
-            }, 500);
-        }).catch(err => { showToast('Gagal mendaftar: ' + err.message, 'error'); }).finally(() => {
+                if (user) { showApp(user); }
+                else { showToast('Akun dibuat, silakan pilih dari daftar', 'success'); }
+            }, 600);
+        } catch (err) {
+            showToast('Gagal mendaftar: ' + err.message, 'error');
+        } finally {
             btnRegister.disabled = false;
-            btnRegister.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Daftar & Masuk';
-        });
+            btnRegister.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Akun Baru';
+        }
     };
 
-    window.enterAsUser = function(key) {
+    // === MODAL SANDI ===
+    function openPwModal(key) {
         const user = userList.find(u => u.key === key);
-        if (!user) { showToast('Pengguna tidak ditemukan', 'error'); return; }
-        saveLastUser(key);
-        showApp(user);
-        showToast(`Selamat datang, ${user.name}`, 'success');
+        if (!user) return;
+
+        pendingLoginUser = user;
+
+        if (user.hasPassword) {
+            // Mode verifikasi sandi
+            pwMode = 'verify';
+            pwModalIcon.className = 'pw-modal-icon';
+            pwModalIcon.innerHTML = '<i class="fa-solid fa-lock"></i>';
+            pwModalTitle.textContent = 'Masukkan Sandi';
+            pwModalDesc.innerHTML = 'Masukkan sandi untuk akun <strong style="color:var(--fg)">' + esc(user.name) + '</strong>';
+            pwConfirmWrap.style.display = 'none';
+            pwModalHint.textContent = 'Minimal 4 karakter';
+            pwSubmitBtn.textContent = 'Masuk';
+            pwModalInput.placeholder = 'Sandi...';
+        } else {
+            // Mode buat sandi baru (akun lama tanpa sandi)
+            pwMode = 'create';
+            pwModalIcon.className = 'pw-modal-icon create-mode';
+            pwModalIcon.innerHTML = '<i class="fa-solid fa-key"></i>';
+            pwModalTitle.textContent = 'Buat Sandi';
+            pwModalDesc.innerHTML = 'Akun <strong style="color:var(--fg)">' + esc(user.name) + '</strong> belum memiliki sandi. Buat sandi untuk keamanan data kamu.';
+            pwConfirmWrap.style.display = '';
+            pwModalHint.textContent = 'Sandi minimal 4 karakter, hanya kamu yang tahu';
+            pwSubmitBtn.textContent = 'Buat & Masuk';
+            pwModalInput.placeholder = 'Buat sandi...';
+        }
+
+        pwModalInput.value = '';
+        pwModalConfirm.value = '';
+        pwModalInput.type = 'password';
+        pwModalConfirm.type = 'password';
+        passwordModal.querySelectorAll('.pw-toggle i').forEach(i => i.className = 'fa-solid fa-eye');
+        passwordModal.classList.add('show');
+        setTimeout(() => pwModalInput.focus(), 350);
+    }
+
+    function closePwModal() {
+        passwordModal.classList.remove('show');
+        pendingLoginUser = null;
+    }
+
+    window.handlePwSubmit = async function() {
+        if (!pendingLoginUser) return;
+        const pw = pwModalInput.value;
+
+        if (!pw || pw.length < 4) {
+            showToast('Sandi minimal 4 karakter', 'error');
+            pwModalInput.focus();
+            return;
+        }
+
+        pwSubmitBtn.disabled = true;
+
+        try {
+            if (pwMode === 'create') {
+                // Buat sandi baru untuk akun lama
+                const confirm = pwModalConfirm.value;
+                if (pw !== confirm) {
+                    showToast('Konfirmasi sandi tidak cocok', 'error');
+                    pwModalConfirm.focus();
+                    pwSubmitBtn.disabled = false;
+                    return;
+                }
+                const hash = await hashPassword(pw);
+                await userListRef.child(pendingLoginUser.key).child('passwordHash').set(hash);
+                closePwModal();
+                showApp(pendingLoginUser);
+                showToast('Sandi berhasil dibuat untuk ' + pendingLoginUser.name, 'success');
+            } else {
+                // Verifikasi sandi
+                const hash = await hashPassword(pw);
+                const snap = await userListRef.child(pendingLoginUser.key).child('passwordHash').once('value');
+                const storedHash = snap.val();
+                if (hash === storedHash) {
+                    closePwModal();
+                    showApp(pendingLoginUser);
+                    showToast('Selamat datang, ' + pendingLoginUser.name, 'success');
+                } else {
+                    showToast('Sandi salah! Coba lagi.', 'error');
+                    pwModalInput.value = '';
+                    pwModalInput.focus();
+                    // Animasi shake
+                    pwModalInput.style.animation = 'none';
+                    void pwModalInput.offsetWidth;
+                    pwModalInput.style.animation = 'shake 0.4s ease';
+                }
+            }
+        } catch (err) {
+            showToast('Gagal: ' + err.message, 'error');
+        } finally {
+            pwSubmitBtn.disabled = false;
+        }
     };
 
-    function saveLastUser(key) { try { localStorage.setItem('tabungan_lastUser', key); } catch(e) {} }
+    // Animasi shake untuk input salah
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }`;
+    document.head.appendChild(shakeStyle);
 
-    // Hapus pengguna
+    passwordModal.addEventListener('click', function(e) { if (e.target === passwordModal) closePwModal(); });
+
+    // Keyboard: Enter pada modal sandi
+    pwModalInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (pwMode === 'create') { pwModalConfirm.focus(); }
+            else { handlePwSubmit(); }
+        }
+    });
+    pwModalConfirm.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); handlePwSubmit(); }
+    });
+
+    // === HAPUS PENGGUNA ===
     function showDeleteUserModal(key, name) { pendingDeleteUserKey = key; deleteModalUser.textContent = name; deleteUserModal.classList.add('show'); }
     function closeDeleteUserModal() { deleteUserModal.classList.remove('show'); pendingDeleteUserKey = null; }
     async function confirmDeleteUser() {
@@ -761,7 +1047,7 @@
     }
     deleteUserModal.addEventListener('click', function(e) { if (e.target === deleteUserModal) closeDeleteUserModal(); });
 
-    // Transaksi
+    // === TRANSAKSI ===
     function attachUserListener(userKey) {
         if (syncListener) userTxRef(currentUser ? currentUser.key : '').off();
         setSyncingState(true);
@@ -859,7 +1145,7 @@
         catch (err) { showToast('Gagal menghapus: ' + err.message, 'error'); }
     }
 
-    // Modal & toast
+    // === MODAL & TOAST ===
     function showClearModal() { if (!currentUser) return; clearModalUser.textContent = currentUser.name; clearModal.classList.add('show'); }
     function closeClearModal() { clearModal.classList.remove('show'); }
     clearModal.addEventListener('click', function(e) { if (e.target === clearModal) closeClearModal(); });
@@ -873,50 +1159,29 @@
         setTimeout(() => { if (t.parentNode) t.remove(); }, 2800);
     }
 
-    // Input
+    // === INPUT ===
     nominalInput.addEventListener('input', function() { const c = this.value.replace(/[^0-9]/g, ''); this.value = c ? parseInt(c, 10).toLocaleString('id-ID') : ''; });
     noteInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
 
-    // Keyboard
+    // === KEYBOARD GLOBAL ===
     document.addEventListener('keydown', function(e) {
+        // Modal sandi sedang terbuka → jangan proses shortcut lain
+        if (passwordModal.classList.contains('show')) return;
+
         if (!currentUser && e.key === 'Enter' && document.activeElement === nameInput) { e.preventDefault(); registerAndEnter(); return; }
+        if (!currentUser && e.key === 'Enter' && (document.activeElement === pwRegInput || document.activeElement === pwRegConfirm)) { e.preventDefault(); registerAndEnter(); return; }
         if (currentUser && e.key === 'Enter' && !e.shiftKey && document.activeElement !== noteInput) { e.preventDefault(); addTransaction('in'); return; }
-        if (e.key === 'Escape') { closeClearModal(); closeDeleteUserModal(); }
+        if (e.key === 'Escape') { closeClearModal(); closeDeleteUserModal(); closePwModal(); }
     });
 
-    // Koneksi deteksi
+    // === KONEKSI ===
     database.ref('.info/connected').on('value', (snap) => { updateConnUI(snap.val() === true); });
     window.addEventListener('online', () => { showToast('Koneksi kembali online', 'success'); if (currentUser) forceSync(); });
     window.addEventListener('offline', () => { updateConnUI(false); showToast('Koneksi terputus', 'warn'); });
 
-    // Init
+    // === INIT ===
     attachUsersListener();
     nameInput.focus();
-
-    // Auto-login pengguna terakhir
-    try {
-        const lastUser = localStorage.getItem('tabungan_lastUser');
-        if (lastUser) {
-            const checkTimer = setInterval(() => {
-                clearInterval(checkTimer);
-                const found = userList.find(u => u.key === lastUser);
-                if (found) {
-                    currentUser = found;
-                    loginScreen.classList.remove('visible');
-                    loginScreen.classList.add('hidden');
-                    appScreen.classList.remove('hidden');
-                    appScreen.classList.add('visible');
-                    const color = getAvatarColor(found.name);
-                    headerAvatar.textContent = getInitials(found.name);
-                    headerAvatar.style.background = color;
-                    headerAvatar.style.borderColor = color + '44';
-                    headerName.textContent = found.name;
-                    attachUserListener(found.key);
-                }
-            }, 600);
-            setTimeout(() => clearInterval(checkTimer), 3000);
-        }
-    } catch(e) {}
 </script>
 
 </body>
